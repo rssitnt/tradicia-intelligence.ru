@@ -13,8 +13,20 @@ export default function Header() {
       setIsScrolled(scrollTop > 100)
     }
 
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (!target.closest('.mobile-menu-container')) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+
     window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    document.addEventListener('mousedown', handleClickOutside)
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [])
 
   const scrollToSection = (sectionId: string) => {
@@ -38,11 +50,11 @@ export default function Header() {
           : 'bg-transparent backdrop-blur-lg'
       }`}
     >
-      <nav className="px-6 py-4 relative flex items-center justify-center">
+      <nav className="px-6 py-4 relative flex items-center justify-between">
         {/* Логотип */}
         <button 
           onClick={scrollToTop}
-          className="absolute left-4 flex items-center"
+          className="flex items-center"
         >
           <Image
             src="/mini_logo_TI.png"
@@ -85,35 +97,49 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Мобильная навигация */}
-        <div className="md:hidden flex items-center space-x-4">
+        {/* Мобильное бургер-меню */}
+        <div className="md:hidden relative mobile-menu-container">
           <button 
-            onClick={() => scrollToSection('about')}
-            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-300 text-sm px-2 py-1"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="text-tradicia-white hover:text-tradicia-blue transition-colors duration-300 p-2"
           >
-            О нас
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
           </button>
-          
-          <button 
-            onClick={() => scrollToSection('events')}
-            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-300 text-sm px-2 py-1"
-          >
-            События
-          </button>
-          
-          <button 
-            onClick={() => scrollToSection('projects')}
-            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-300 text-sm px-2 py-1"
-          >
-            Проекты
-          </button>
-          
-          <button 
-            onClick={() => scrollToSection('contacts')}
-            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-300 text-sm px-2 py-1"
-          >
-            Контакты
-          </button>
+
+          {/* Выпадающее меню */}
+          {isMobileMenuOpen && (
+            <div className="absolute right-0 top-12 glass-effect rounded-xl shadow-lg py-2 min-w-[160px] z-50">
+              <button 
+                onClick={() => scrollToSection('about')}
+                className="block w-full text-left px-4 py-3 text-tradicia-white hover:text-tradicia-blue hover:bg-white/10 transition-all duration-300"
+              >
+                О нас
+              </button>
+              
+              <button 
+                onClick={() => scrollToSection('events')}
+                className="block w-full text-left px-4 py-3 text-tradicia-white hover:text-tradicia-blue hover:bg-white/10 transition-all duration-300"
+              >
+                События
+              </button>
+              
+              <button 
+                onClick={() => scrollToSection('projects')}
+                className="block w-full text-left px-4 py-3 text-tradicia-white hover:text-tradicia-blue hover:bg-white/10 transition-all duration-300"
+              >
+                Проекты
+              </button>
+              
+              <button 
+                onClick={() => scrollToSection('contacts')}
+                className="block w-full text-left px-4 py-3 text-tradicia-white hover:text-tradicia-blue hover:bg-white/10 transition-all duration-300"
+              >
+                Контакты
+              </button>
+            </div>
+          )}
         </div>
       </nav>
     </header>
