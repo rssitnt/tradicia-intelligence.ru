@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,17 +22,19 @@ export default function Header() {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
+    setIsMobileMenuOpen(false) // Закрываем мобильное меню после перехода
   }
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
+    setIsMobileMenuOpen(false)
   }
 
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
         isScrolled 
-          ? 'bg-black/5 backdrop-blur-lg shadow-lg mt-4 mx-48 rounded-2xl' 
+          ? 'bg-black/5 backdrop-blur-lg shadow-lg mt-4 mx-4 md:mx-48 rounded-2xl' 
           : 'bg-transparent backdrop-blur-lg'
       }`}
     >
@@ -51,7 +54,7 @@ export default function Header() {
           />
         </button>
 
-        {/* Навигация */}
+        {/* Десктопная навигация */}
         <div className="hidden md:flex items-center space-x-8">
           <button 
             onClick={() => scrollToSection('about')}
@@ -82,12 +85,34 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Мобильное меню */}
-        <div className="md:hidden">
-          <button className="text-tradicia-white">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+        {/* Мобильная навигация */}
+        <div className="md:hidden flex items-center space-x-4">
+          <button 
+            onClick={() => scrollToSection('about')}
+            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-300 text-sm px-2 py-1"
+          >
+            О нас
+          </button>
+          
+          <button 
+            onClick={() => scrollToSection('events')}
+            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-300 text-sm px-2 py-1"
+          >
+            События
+          </button>
+          
+          <button 
+            onClick={() => scrollToSection('projects')}
+            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-300 text-sm px-2 py-1"
+          >
+            Проекты
+          </button>
+          
+          <button 
+            onClick={() => scrollToSection('contacts')}
+            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-300 text-sm px-2 py-1"
+          >
+            Контакты
           </button>
         </div>
       </nav>

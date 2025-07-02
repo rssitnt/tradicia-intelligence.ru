@@ -170,12 +170,12 @@ export default function ContactsSection() {
             Следите за нашими новостями
           </h3>
           
-          <div className="flex justify-center space-x-8">
+          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
             <a 
               href="https://t.me/tradicia_intelligence_news"
               target="_blank"
               rel="noopener noreferrer"
-              className="glass-effect rounded-2xl p-6 hover-glow transition-all duration-[1200ms] flex items-center space-x-3"
+              className="glass-effect rounded-2xl p-6 hover-glow transition-all duration-[1200ms] flex items-center space-x-3 w-full max-w-sm md:w-auto"
             >
               <Image 
                 src="/tg_new.png"
@@ -194,7 +194,7 @@ export default function ContactsSection() {
               href="https://www.youtube.com/channel/tradicia-intelligence"
               target="_blank"
               rel="noopener noreferrer"
-              className="glass-effect rounded-2xl p-6 hover-glow transition-all duration-[1200ms] flex items-center space-x-3"
+              className="glass-effect rounded-2xl p-6 hover-glow transition-all duration-[1200ms] flex items-center space-x-3 w-full max-w-sm md:w-auto"
             >
               <Image 
                 src="/yt_new.png"

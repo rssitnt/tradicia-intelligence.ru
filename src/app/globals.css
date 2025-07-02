@@ -22,6 +22,18 @@
     transition: opacity 0.3s ease-in-out;
   }
 
+  /* Мобильная адаптация */
+  @media (max-width: 768px) {
+    body {
+      text-align: center;
+    }
+    
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+
   /* Кириллические шрифты */
   body {
     font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
