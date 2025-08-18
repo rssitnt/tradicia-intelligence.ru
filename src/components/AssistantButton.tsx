@@ -55,7 +55,7 @@ export default function AssistantButton() {
 			<button
 				aria-label="Чат с ИИ-ассистентом"
 				onClick={() => setIsOpen(v => !v)}
-				className="fixed bottom-6 left-6 z-[60] inline-flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-400 text-white shadow-lg ring-1 ring-white/20 transition-transform hover:scale-105"
+				className="fixed bottom-6 right-6 z-[60] relative inline-flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-400 text-white shadow-lg ring-1 ring-white/20 transition-all duration-500 md:duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/30 before:content-[''] before:absolute before:inset-0 before:rounded-full before:bg-blue-500/20 before:blur-xl before:transition-opacity before:duration-700 before:opacity-0 hover:before:opacity-100"
 			>
 				<svg
 					className="h-7 w-7"
