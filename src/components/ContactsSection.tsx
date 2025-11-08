@@ -103,13 +103,15 @@ export default function ContactsSection() {
                     </div>
 
                     <div className="flex items-center space-x-2 group">
-                      <Image 
-                        src="/tg2.png"
-                        alt="Telegram"
-                        width={19}
-                        height={19}
-                        className="w-5 h-5 flex-shrink-0 -ml-1"
-                      />
+                      <div className="flex items-center justify-center w-4 h-4 flex-shrink-0">
+                        <Image 
+                          src="/tg.png"
+                          alt="Telegram"
+                          width={14}
+                          height={14}
+                          className="w-3.5 h-3.5 object-contain"
+                        />
+                      </div>
                       <a 
                         href={`https://t.me/${contact.telegram.replace('@', '')}`}
                         target="_blank"

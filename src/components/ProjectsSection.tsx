@@ -115,9 +115,6 @@ export default function ProjectsSection() {
                       <p className="text-gray-300 leading-relaxed mb-4 text-sm">
                         {project.description}
                       </p>
-                      <button className="text-tradicia-blue hover:text-tradicia-white transition-colors duration-300 text-sm">
-                        Подробнее →
-                      </button>
                     </div>
                   </div>
                 </div>

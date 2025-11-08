@@ -52,6 +52,10 @@
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   }
 
+  .glass-effect.no-border {
+    border: none;
+  }
+
   /* Hover эффекты */
   .hover-glow {
     transition: all 0.3s ease;
