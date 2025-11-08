@@ -14,30 +14,9 @@ const localProjects: Project[] = [
   {
     id: 1,
     title: 'CRM-агент',
-    description: 'Автоматический перевод звонков в текст, саммари диалога, вычленение 13 параметров.',
+    description: 'Саммари звонка и рекоммендации менеджеру по дальнейшим действиям',
     details: 'Автоматический перевод звонков в текст, саммари диалога, вычленение 13 параметров (потребность, бюджет, базовая машина и т.д.) и оценка качества обслуживания клиента.',
     icon: '📞'
-  },
-  {
-    id: 2,
-    title: 'ИИ-ассистент сотрудников',
-    description: 'Знает всё о группе компаний, видит и может редактировать ваши задачи.',
-    details: 'Знает всё о группе компаний, видит и может редактировать ваши задачи, календарь и письма',
-    icon: '👥'
-  },
-  {
-    id: 3,
-    title: 'ИИ-ассистент клиентов',
-    description: 'Знает всё о нашей компании и её продукции, поможет подобрать оборудование.',
-    details: 'Знает всё о нашей компании и её продукции, поможет подобрать оборудование и расскажет все нюансы эксплуатации.',
-    icon: '🤖'
-  },
-  {
-    id: 4,
-    title: 'Прогнозирование спроса',
-    description: 'Помогает поддерживать необходимый запас изделий на складе.',
-    details: 'Помогает поддерживать необходимый запас изделий на складе и регулировать цены.',
-    icon: '📈'
   }
 ]
 
@@ -80,34 +59,35 @@ export default function ProjectsSection() {
           <h2 className="text-4xl font-bold text-tradicia-white mb-4 fade-in">
             Проекты
           </h2>
-          <p className="text-tradicia-blue text-sm font-medium">
-            Этот раздел находится в бета-версии. Поэтому, мы опубликовали здесь наши будущие проекты.
-          </p>
         </div>
 
         {/* Карусель */}
         <div className="relative max-w-5xl mx-auto">
           {/* Левая стрелка */}
-          <button 
-            onClick={prevProject}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 text-tradicia-blue hover:bg-tradicia-blue hover:text-white rounded-full transition-all duration-300 z-10"
-            disabled={isTransitioning}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+          {projects.length > 1 && (
+            <button 
+              onClick={prevProject}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 text-tradicia-blue hover:bg-tradicia-blue hover:text-white rounded-full transition-all duration-300 z-10"
+              disabled={isTransitioning}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
 
           {/* Правая стрелка */}
-          <button 
-            onClick={nextProject}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-tradicia-blue hover:bg-tradicia-blue hover:text-white rounded-full transition-all duration-300 z-10"
-            disabled={isTransitioning}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          {projects.length > 1 && (
+            <button 
+              onClick={nextProject}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-tradicia-blue hover:bg-tradicia-blue hover:text-white rounded-full transition-all duration-300 z-10"
+              disabled={isTransitioning}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
 
           {/* Контейнер для карусели */}
           <div className="overflow-hidden px-12">
@@ -146,25 +126,27 @@ export default function ProjectsSection() {
           </div>
 
           {/* Индикаторы */}
-          <div className="flex justify-center space-x-2 mt-6">
-            {projects.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  if (!isTransitioning && index !== currentIndex) {
-                    setIsTransitioning(true)
-                    setCurrentIndex(index)
-                    setTimeout(() => {
-                      setIsTransitioning(false)
-                    }, 700)
-                  }
-                }}
-                className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                  index === currentIndex ? 'bg-tradicia-blue' : 'bg-gray-600'
-                }`}
-              />
-            ))}
-          </div>
+          {projects.length > 1 && (
+            <div className="flex justify-center space-x-2 mt-6">
+              {projects.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    if (!isTransitioning && index !== currentIndex) {
+                      setIsTransitioning(true)
+                      setCurrentIndex(index)
+                      setTimeout(() => {
+                        setIsTransitioning(false)
+                      }, 700)
+                    }
+                  }}
+                  className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                    index === currentIndex ? 'bg-tradicia-blue' : 'bg-gray-600'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Модальное окно */}

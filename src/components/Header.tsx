@@ -76,13 +76,6 @@ export default function Header() {
           </button>
           
           <button 
-            onClick={() => scrollToSection('events')}
-            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-500 ease-in-out transform hover:scale-105"
-          >
-            События
-          </button>
-          
-          <button 
             onClick={() => scrollToSection('projects')}
             className="text-tradicia-white hover:text-tradicia-blue transition-all duration-500 ease-in-out transform hover:scale-105"
           >
@@ -116,13 +109,6 @@ export default function Header() {
                 className="block w-full text-left px-4 py-3 text-tradicia-white hover:text-tradicia-blue hover:bg-white/10 transition-all duration-300"
               >
                 О нас
-              </button>
-              
-              <button 
-                onClick={() => scrollToSection('events')}
-                className="block w-full text-left px-4 py-3 text-tradicia-white hover:text-tradicia-blue hover:bg-white/10 transition-all duration-300"
-              >
-                События
               </button>
               
               <button 
