@@ -19,7 +19,7 @@ const contacts: Contact[] = [
     telegram: '@rsstnt',
     email: 'kirillov.a@tradicia-k.ru',
     role: 'Тимлид',
-    photo: '/artem_k2.jpg'
+    photo: '/artem_k.jpg'
   },
   {
     name: 'Шабуров Ян Сергеевич',
@@ -27,7 +27,7 @@ const contacts: Contact[] = [
     telegram: '@reflectitur',
     email: 'shaburov.y@tradicia-k.ru',
     role: 'Разработчик',
-    photo: '/shaburov_yan.jpg'
+    photo: '/yan_s.jpg'
   }
 ]
 
@@ -55,14 +55,14 @@ export default function ContactsSection() {
         <div className="grid md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
           {contacts.map((contact, index) => (
             <div key={index} className="glass-effect rounded-xl p-4 hover-glow transition-all duration-[1200ms]">
-              <div className="flex items-start space-x-4">
+              <div className="flex items-start space-x-6">
                 {/* Фото */}
-                <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
                   <Image
                     src={contact.photo}
                     alt={contact.name}
-                    width={64}
-                    height={64}
+                    width={96}
+                    height={96}
                     className="w-full h-full object-cover"
                   />
                 </div>
