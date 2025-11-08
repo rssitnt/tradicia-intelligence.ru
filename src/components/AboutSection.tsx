@@ -58,14 +58,14 @@ export default function AboutSection() {
   return (
     <section id="about" className="py-20 px-6 bg-black">
       <div className="container mx-auto max-w-4xl">
-        <h2 className="text-4xl font-bold text-center text-tradicia-white mb-16">
+        <h2 className="text-4xl font-bold text-center text-tradicia-white mb-0">
           О нас
         </h2>
 
         <div className="relative">
           <div
             ref={cardRef}
-            className="glass-effect no-border rounded-2xl p-8 md:p-12 cursor-pointer transition-transform duration-500 ease-out"
+            className="rounded-2xl p-8 md:p-12 cursor-pointer transition-transform duration-500 ease-out border-0 shadow-none bg-transparent"
           >
             <div className="text-center">
               <p className="text-lg text-gray-300 leading-relaxed">

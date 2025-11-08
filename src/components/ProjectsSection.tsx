@@ -101,10 +101,10 @@ export default function ProjectsSection() {
               {projects.map((project, index) => (
                 <div
                   key={project.id}
-                  className="w-full flex-shrink-0 px-4"
+                  className="w-full flex-shrink-0 px-4 flex justify-center"
                 >
                   <div 
-                    className="glass-effect rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-tradicia-blue/20 h-full"
+                    className="glass-effect rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-tradicia-blue/20 h-full w-full max-w-[42rem]"
                     onClick={() => handleProjectClick(project)}
                   >
                     <div className="text-center h-full flex flex-col justify-center">
