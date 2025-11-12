@@ -1,11 +1,17 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isNavCollapsed, setIsNavCollapsed] = useState(false)
+
+  const navRef = useRef<HTMLElement | null>(null)
+  const logoRef = useRef<HTMLButtonElement | null>(null)
+  const desktopNavRef = useRef<HTMLDivElement | null>(null)
+  const burgerRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +32,84 @@ export default function Header() {
     return () => {
       window.removeEventListener('scroll', handleScroll)
       document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isNavCollapsed) {
+      setIsMobileMenuOpen(false)
+    }
+  }, [isNavCollapsed])
+
+  useEffect(() => {
+    const measureLinksWidth = () => {
+      if (!desktopNavRef.current) return 0
+
+      const element = desktopNavRef.current
+      const previousDisplay = element.style.display
+      const previousVisibility = element.style.visibility
+      const previousPosition = element.style.position
+      const previousPointerEvents = element.style.pointerEvents
+      const previousWhiteSpace = element.style.whiteSpace
+
+      element.style.display = 'flex'
+      element.style.visibility = 'hidden'
+      element.style.position = 'absolute'
+      element.style.pointerEvents = 'none'
+      element.style.whiteSpace = 'nowrap'
+
+      const computedStyles = window.getComputedStyle(element)
+      const gapValue =
+        parseFloat(computedStyles.columnGap || computedStyles.gap || '0') || 0
+
+      const children = Array.from(element.children) as HTMLElement[]
+      const childrenWidth = children.reduce(
+        (total, child) => total + child.offsetWidth,
+        0
+      )
+      const totalWidth =
+        childrenWidth + gapValue * Math.max(children.length - 1, 0)
+
+      element.style.display = previousDisplay
+      element.style.visibility = previousVisibility
+      element.style.position = previousPosition
+      element.style.pointerEvents = previousPointerEvents
+      element.style.whiteSpace = previousWhiteSpace
+
+      return totalWidth
+    }
+
+    const updateNavCollapse = () => {
+      if (!navRef.current) return
+
+      const navWidth = navRef.current.clientWidth
+      const logoWidth = logoRef.current?.offsetWidth ?? 0
+      const burgerWidth = burgerRef.current?.offsetWidth ?? 0
+      const safetyGap = 64
+      const requiredLinksWidth = measureLinksWidth()
+
+      const shouldCollapse =
+        requiredLinksWidth + logoWidth + burgerWidth + safetyGap > navWidth
+
+      setIsNavCollapsed((prev) =>
+        prev === shouldCollapse ? prev : shouldCollapse
+      )
+    }
+
+    updateNavCollapse()
+
+    let observer: ResizeObserver | undefined
+
+    if (typeof ResizeObserver !== 'undefined' && navRef.current) {
+      observer = new ResizeObserver(() => updateNavCollapse())
+      observer.observe(navRef.current)
+    }
+
+    window.addEventListener('resize', updateNavCollapse)
+
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener('resize', updateNavCollapse)
     }
   }, [])
 
@@ -50,48 +134,60 @@ export default function Header() {
           : 'bg-transparent backdrop-blur-lg'
       }`}
     >
-      <nav className="px-6 py-4 relative flex items-center justify-between">
+      <nav 
+        ref={navRef}
+        className="px-6 py-4 relative flex items-center justify-between"
+      >
         {/* Логотип */}
         <button 
           onClick={scrollToTop}
-          className="flex items-center"
+          ref={logoRef}
+          className="flex items-center flex-shrink-0"
         >
           <Image
             src="/mini_logo_TI.png"
             alt="Tradicia Intelligence"
             width={120}
             height={32}
-            className="h-8 w-auto"
+            className="h-8 w-auto flex-shrink-0"
             priority
           />
         </button>
 
         {/* Десктопная навигация */}
-        <div className="hidden md:flex items-center space-x-8">
+        <div
+          ref={desktopNavRef}
+          className={`items-center gap-x-8 md:flex-nowrap ${
+            isNavCollapsed ? 'hidden' : 'hidden md:flex'
+          }`}
+        >
           <button 
             onClick={() => scrollToSection('about')}
-            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-500 ease-in-out transform hover:scale-105"
+            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-500 ease-in-out transform hover:scale-105 whitespace-nowrap flex-shrink-0"
           >
             О нас
           </button>
           
           <button 
             onClick={() => scrollToSection('projects')}
-            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-500 ease-in-out transform hover:scale-105"
+            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-500 ease-in-out transform hover:scale-105 whitespace-nowrap flex-shrink-0"
           >
             Проекты
           </button>
           
           <button 
             onClick={() => scrollToSection('contacts')}
-            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-500 ease-in-out transform hover:scale-105"
+            className="text-tradicia-white hover:text-tradicia-blue transition-all duration-500 ease-in-out transform hover:scale-105 whitespace-nowrap flex-shrink-0"
           >
             Контакты
           </button>
         </div>
 
         {/* Мобильное бургер-меню */}
-        <div className="md:hidden relative mobile-menu-container">
+        <div
+          ref={burgerRef}
+          className={`relative mobile-menu-container ${isNavCollapsed ? '' : 'md:hidden'}`}
+        >
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="text-tradicia-white hover:text-tradicia-blue transition-colors duration-300 p-2"

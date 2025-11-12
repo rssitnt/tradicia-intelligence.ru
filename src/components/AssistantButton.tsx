@@ -17,12 +17,13 @@ export default function AssistantButton() {
 
 	const button = (
 		<div
-			className="fixed left-4 md:left-6 bottom-[calc(1rem+env(safe-area-inset-bottom))] md:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] z-[10000]"
+			className="group fixed left-4 md:left-6 bottom-[calc(1rem+env(safe-area-inset-bottom))] md:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] z-[10000] relative"
 		>
+			<span className="pointer-events-none absolute -inset-3 -z-10 rounded-full bg-blue-500/30 blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-40" />
 			<button
 				aria-label="Чат с ИИ-ассистентом"
 				onClick={handleClick}
-				className="relative inline-flex h-11 w-11 overflow-hidden rounded-full shadow-lg ring-1 ring-white/20 transition-all duration-500 md:duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:-rotate-6 hover:shadow-2xl hover:shadow-blue-500/30 before:content-[''] before:absolute before:inset-0 before:rounded-full before:bg-blue-500/25 before:blur-xl before:transition-opacity before:duration-700 before:opacity-0 hover:before:opacity-100"
+				className="relative z-10 inline-flex h-11 w-11 overflow-hidden rounded-full shadow-lg ring-1 ring-white/20 transition-all duration-500 md:duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:-rotate-6 hover:shadow-xl hover:shadow-blue-500/25 before:content-[''] before:absolute before:inset-0 before:rounded-full before:bg-blue-500/25 before:blur-xl before:transition-opacity before:duration-700 before:opacity-0 hover:before:opacity-100"
 			>
 				<Image
 					src="/tg_new.png"
