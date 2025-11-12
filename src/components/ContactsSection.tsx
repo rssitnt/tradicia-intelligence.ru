@@ -19,7 +19,7 @@ const contacts: Contact[] = [
     telegram: '@rsstnt',
     email: 'kirillov.a@tradicia-k.ru',
     role: 'Тимлид',
-    photo: '/artem_k.jpg'
+    photo: '/kirillov_a.png'
   },
   {
     name: 'Шабуров Ян Сергеевич',
@@ -52,7 +52,7 @@ export default function ContactsSection() {
         </h2>
 
         {/* Команда */}
-        <div className="flex flex-col md:flex-row justify-center items-stretch space-y-4 md:space-y-0 md:space-x-8 mb-12 max-w-4xl mx-auto">
+        <div className="flex flex-col justify-center items-center space-y-4 mb-12 max-w-4xl mx-auto">
           {contacts.map((contact, index) => (
             <div
               key={index}
