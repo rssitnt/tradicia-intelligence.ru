@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import AssistantButton from '../components/AssistantButton'
-import MouseGradient from '../components/MouseGradient'
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
@@ -40,13 +38,7 @@ export default function RootLayout({
             document.body.classList.add('loaded');
           `
         }} />
-        <MouseGradient />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 -z-10 mouse-gradient-layer"
-        />
         {children}
-        <AssistantButton />
       </body>
     </html>
   )

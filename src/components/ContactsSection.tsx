@@ -58,15 +58,15 @@ export default function ContactsSection() {
               key={index}
               className="glass-effect rounded-xl p-3 hover-glow transition-all duration-[1200ms] w-full max-w-[420px] md:max-w-[410px] mx-auto md:mx-0"
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-stretch gap-4 h-full">
                 {/* Фото */}
-                <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
+                <div className="relative w-20 sm:w-24 flex-shrink-0 overflow-hidden rounded-xl self-stretch">
                   <Image
                     src={contact.photo}
                     alt={contact.name}
-                    width={80}
-                    height={80}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 640px) 96px, 80px"
                   />
                 </div>
 
@@ -169,52 +169,6 @@ export default function ContactsSection() {
           ))}
         </div>
 
-        {/* Социальные сети */}
-        <div className="text-center">
-          <h3 className="text-2xl font-semibold text-tradicia-white mb-8">
-            Следите за нашими новостями
-          </h3>
-          
-          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
-            <a 
-              href="https://t.me/tradicia_intelligence_news"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="glass-effect rounded-2xl p-6 hover-glow transition-all duration-[1200ms] flex items-center space-x-3 w-full max-w-sm md:w-auto"
-            >
-              <Image 
-                src="/tg_new.png"
-                alt="Telegram"
-                width={32}
-                height={32}
-                className="w-8 h-8"
-              />
-              <div className="text-left">
-                <p className="text-tradicia-white font-semibold">Telegram канал</p>
-                <p className="text-gray-400 text-sm">@tradicia_intelligence_news</p>
-              </div>
-            </a>
-
-            <a 
-              href="https://www.youtube.com/channel/tradicia-intelligence"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="glass-effect rounded-2xl p-6 hover-glow transition-all duration-[1200ms] flex items-center space-x-3 w-full max-w-sm md:w-auto"
-            >
-              <Image 
-                src="/yt_new.png"
-                alt="YouTube"
-                width={32}
-                height={32}
-                className="w-8 h-8 object-contain flex-shrink-0"
-              />
-              <div className="text-left">
-                <p className="text-tradicia-white font-semibold">YouTube</p>
-                <p className="text-gray-400 text-sm">Наш канал</p>
-              </div>
-            </a>
-          </div>
-        </div>
       </div>
     </section>
   )

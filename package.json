@@ -12,8 +12,7 @@
     "next.js",
     "react",
     "typescript",
-    "tailwind",
-    "supabase"
+    "tailwind"
   ],
   "author": "",
   "license": "ISC",
@@ -28,7 +27,6 @@
     "typescript": "^5.8.3"
   },
   "devDependencies": {
-    "@supabase/supabase-js": "^2.50.2",
     "autoprefixer": "^10.4.17",
     "eslint": "^9.30.0",
     "eslint-config-next": "^15.3.4",
