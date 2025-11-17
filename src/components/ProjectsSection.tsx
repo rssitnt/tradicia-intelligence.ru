@@ -68,21 +68,18 @@ export default function ProjectsSection() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(26,112,255,0.12),_transparent_55%)]" />
       <div className="container relative z-10 mx-auto max-w-6xl">
         <div className="mx-auto mb-16 max-w-3xl text-center">
-          <span className="inline-flex items-center justify-center rounded-full border border-tradicia-blue/40 bg-tradicia-blue/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-tradicia-blue">
-            Наши кейсы
-          </span>
           <h2 className="mt-6 text-4xl font-bold text-tradicia-white sm:text-5xl">
             Проекты
           </h2>
         </div>
 
-        <div className="grid gap-6 sm:gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-6 sm:gap-8 justify-items-center md:justify-items-stretch md:grid-cols-2 xl:grid-cols-3">
           {projects.map((project) => (
             <button
               key={project.id}
               type="button"
               onClick={() => setSelectedProject(project)}
-              className="group glass-effect flex h-full flex-col gap-6 rounded-3xl border border-white/5 p-6 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-tradicia-blue/80"
+              className="group glass-effect flex h-full w-full max-w-[26rem] flex-col gap-6 rounded-3xl border border-white/5 p-6 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-tradicia-blue/80 md:max-w-none"
             >
               <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-tradicia-blue/15 text-3xl">
                 {project.icon}
