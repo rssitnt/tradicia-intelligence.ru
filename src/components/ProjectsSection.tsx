@@ -53,7 +53,7 @@ const projectsData: Project[] = [
   },
   {
     id: 3,
-    title: 'Telegram lead intelligence',
+    title: 'Генератор лидов в Telegram',
     subtitle: 'Автоматическая вычитка заявок',
     description:
       'ИИ-агент парсит сообщения из тематических телеграм-чатов, выделяет заявки на навеску и подготавливает их для отдела продаж.',
@@ -84,26 +84,26 @@ export default function ProjectsSection() {
           </h2>
         </div>
 
-        <div className="grid gap-4 sm:gap-6 justify-items-center md:justify-items-stretch md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 sm:gap-4 justify-items-center md:justify-items-stretch md:grid-cols-2 xl:grid-cols-3">
           {projectsData.map((project) => (
             <div
               key={project.id}
-              className="group glass-effect flex h-full w-full max-w-[18rem] flex-col gap-4 rounded-3xl border border-white/5 p-4 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20 md:max-w-[18rem]"
+              className="group glass-effect flex h-full w-full max-w-[12rem] flex-col gap-3 rounded-3xl border border-white/5 p-3 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20 md:max-w-[12rem]"
             >
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-tradicia-blue/15 text-2xl">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-tradicia-blue/15 text-xl">
                 {project.icon}
               </span>
 
               <div className="flex flex-col gap-3">
                 <div>
-                  <p className="text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-tradicia-blue/70">
+                  <p className="text-[0.45rem] font-semibold uppercase tracking-[0.28em] text-tradicia-blue/70">
                     {project.subtitle}
                   </p>
-                  <h3 className="mt-2 text-xl font-semibold text-tradicia-white transition-colors duration-300 group-hover:text-tradicia-blue">
+                  <h3 className="mt-2 text-lg font-semibold text-tradicia-white transition-colors duration-300 group-hover:text-tradicia-blue">
                     {project.title}
                   </h3>
                 </div>
-                <p className="text-xs leading-relaxed text-gray-300">
+                <p className="text-[0.7rem] leading-relaxed text-gray-300">
                   {project.description}
                 </p>
               </div>
