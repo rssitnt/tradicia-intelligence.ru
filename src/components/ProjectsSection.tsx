@@ -1,176 +1,258 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+
+interface ProjectMetric {
+  label: string
+  value: string
+}
 
 interface Project {
   id: number
   title: string
+  subtitle: string
   description: string
   details: string
   icon: string
+  tags: string[]
+  metrics?: ProjectMetric[]
+  result?: string
 }
 
-const localProjects: Project[] = [
+const projectsData: Project[] = [
   {
     id: 1,
     title: 'CRM-агент',
-    description: 'Саммари звонка и рекоммендации менеджеру по дальнейшим действиям',
-    details: 'Автоматический перевод звонков в текст, саммари диалога, вычленение 13 параметров (потребность, бюджет, базовая машина и т.д.) и оценка качества обслуживания клиента.',
-    icon: '📞'
+    subtitle: 'Виртуальный помощник для продаж',
+    description:
+      'Автоматизировали обработку звонков: распознаём речь, составляем саммари и предлагаем менеджеру следующие действия.',
+    details:
+      'Интегрированный CRM-агент переводит звонки в текст, выделяет 13 бизнес-показателей, оценивает эмоциональный тон и предлагает критические действия по удержанию клиента. Архитектура построена на пайплайне из ASR, LLM и векторного поиска — обучение производилось на реальных диалогах заказчика.',
+    icon: '🤖',
+    tags: ['ASR', 'LLM orchestration', 'Sales enablement'],
+    metrics: [
+      { label: 'Сэкономлено времени', value: '35%' },
+      { label: 'Точность NER', value: '92%' },
+      { label: 'Окупаемость', value: '4 мес.' }
+    ],
+    result:
+      'Сократили время подготовки менеджера к повторному звонку с 15 до 3 минут.'
+  },
+  {
+    id: 2,
+    title: 'AI-контроллер тендеров',
+    subtitle: 'Выгрузка и анализ закупок 44-ФЗ/223-ФЗ',
+    description:
+      'Собираем ежедневный мониторинг тендеров по десяткам направлений, автоматически проверяем квалификацию и формируем оценку шансов.',
+    details:
+      'Сервис подключается к закупочным площадкам, агрегирует документацию и запускает конвейер из извлечения сущностей, сравнения с матрицей допусков и формирования ответа. В отчёте показываем ключевых конкурентов, диапазон цены и риски отклонения заявки.',
+    icon: '📊',
+    tags: ['Data ingestion', 'Document AI', 'Risk scoring'],
+    metrics: [
+      { label: 'Поток данных', value: '8 площадок' },
+      { label: 'Скорость разбора', value: 'до 4 мин.' },
+      { label: 'Авто-оценки', value: '78 критериев' }
+    ],
+    result: 'Перевели команду закупок на полностью цифровой мониторинг.'
+  },
+  {
+    id: 3,
+    title: 'Генератор GTM материалов',
+    subtitle: 'Продажи и маркетинг b2b SaaS',
+    description:
+      'Помогаем продуктивным командам готовить презентации, one-pager и FAQ на основе CRM и product analytics.',
+    details:
+      'Пайплайн собирает инсайты из CRM, Pendo и Confluence, оборачивает их в тон-оф-войс бренда и генерирует готовые материалы. Решение использует retrieval-augmented generation, кастомные шаблоны и ручной post-editing в единой среде.',
+    icon: '🧠',
+    tags: ['RAG', 'Marketing automation', 'Brand voice'],
+    metrics: [
+      { label: 'Экономия ресурсов', value: 'x3 быстрее' },
+      { label: 'NPS контента', value: '9.1/10' },
+      { label: 'Локализации', value: '5 языков' }
+    ],
+    result: 'Сократили время подготовки sales deck с недели до двух часов.'
   }
 ]
 
 export default function ProjectsSection() {
-  const [projects] = useState<Project[]>(localProjects)
-  const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const [isTransitioning, setIsTransitioning] = useState(false)
 
-  const nextProject = () => {
-    if (isTransitioning) return
-    setIsTransitioning(true)
-    setCurrentIndex((prev) => (prev + 1) % projects.length)
-    setTimeout(() => {
-      setIsTransitioning(false)
-    }, 700)
-  }
+  const projects = useMemo(() => projectsData, [])
 
-  const prevProject = () => {
-    if (isTransitioning) return
-    setIsTransitioning(true)
-    setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length)
-    setTimeout(() => {
-      setIsTransitioning(false)
-    }, 700)
-  }
+  useEffect(() => {
+    if (!selectedProject) {
+      return
+    }
 
-  const handleProjectClick = (project: Project) => {
-    setSelectedProject(project)
-  }
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
 
-  const closeModal = () => {
-    setSelectedProject(null)
-  }
+    return () => {
+      document.body.style.overflow = originalOverflow
+    }
+  }, [selectedProject])
+
+  const closeModal = () => setSelectedProject(null)
 
   return (
-    <section id="projects" className="py-20 px-6 bg-black">
-      <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold text-tradicia-white mb-4 fade-in">
+    <section
+      id="projects"
+      className="relative overflow-hidden bg-black py-24 px-6 sm:px-10"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(26,112,255,0.12),_transparent_55%)]" />
+      <div className="container relative z-10 mx-auto max-w-6xl">
+        <div className="mx-auto mb-16 max-w-3xl text-center">
+          <span className="inline-flex items-center justify-center rounded-full border border-tradicia-blue/40 bg-tradicia-blue/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.4em] text-tradicia-blue">
+            Наши кейсы
+          </span>
+          <h2 className="mt-6 text-4xl font-bold text-tradicia-white sm:text-5xl">
             Проекты
           </h2>
+          <p className="mt-4 text-base text-gray-400 sm:text-lg">
+            Мы строим готовые AI-решения — от интеллектуальных ассистентов до
+            корпоративных аналитических платформ. Каждый проект доводим до
+            измеримого бизнес-результата.
+          </p>
         </div>
 
-        {/* Карусель */}
-        <div className="relative max-w-5xl mx-auto">
-          {/* Левая стрелка */}
-          {projects.length > 1 && (
-            <button 
-              onClick={prevProject}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 text-tradicia-blue hover:bg-tradicia-blue hover:text-white rounded-full transition-all duration-300 z-10"
-              disabled={isTransitioning}
+        <div className="grid gap-6 sm:gap-8 md:grid-cols-2 xl:grid-cols-3">
+          {projects.map((project) => (
+            <button
+              key={project.id}
+              type="button"
+              onClick={() => setSelectedProject(project)}
+              className="group glass-effect flex h-full flex-col gap-6 rounded-3xl border border-white/5 p-6 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-tradicia-blue/80"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-          )}
+              <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-tradicia-blue/15 text-3xl">
+                {project.icon}
+              </span>
 
-          {/* Правая стрелка */}
-          {projects.length > 1 && (
-            <button 
-              onClick={nextProject}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-tradicia-blue hover:bg-tradicia-blue hover:text-white rounded-full transition-all duration-300 z-10"
-              disabled={isTransitioning}
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          )}
-
-          {/* Контейнер для карусели */}
-          <div className="overflow-hidden px-12">
-            <div 
-              className={`flex transition-transform duration-700 ease-in-out`}
-              style={{ 
-                transform: `translateX(-${currentIndex * 100}%)`,
-                willChange: 'transform'
-              }}
-            >
-              {projects.map((project, index) => (
-                <div
-                  key={project.id}
-                  className="w-full flex-shrink-0 px-4 flex justify-center"
-                >
-                  <div 
-                    className="glass-effect rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-tradicia-blue/20 h-full w-full max-w-[42rem]"
-                    onClick={() => handleProjectClick(project)}
-                  >
-                    <div className="text-center h-full flex flex-col justify-center">
-                      <div className="text-4xl mb-4">{project.icon}</div>
-                      <h4 className="text-xl font-semibold text-tradicia-white mb-3">
-                        {project.title}
-                      </h4>
-                      <p className="text-gray-300 leading-relaxed mb-4 text-sm">
-                        {project.description}
-                      </p>
-                    </div>
-                  </div>
+              <div className="flex flex-col gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-tradicia-blue/70">
+                    {project.subtitle}
+                  </p>
+                  <h3 className="mt-2 text-2xl font-semibold text-tradicia-white transition-colors duration-300 group-hover:text-tradicia-blue">
+                    {project.title}
+                  </h3>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Индикаторы */}
-          {projects.length > 1 && (
-            <div className="flex justify-center space-x-2 mt-6">
-              {projects.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    if (!isTransitioning && index !== currentIndex) {
-                      setIsTransitioning(true)
-                      setCurrentIndex(index)
-                      setTimeout(() => {
-                        setIsTransitioning(false)
-                      }, 700)
-                    }
-                  }}
-                  className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                    index === currentIndex ? 'bg-tradicia-blue' : 'bg-gray-600'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Модальное окно */}
-        {selectedProject && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-            <div className="glass-effect rounded-2xl p-8 max-w-2xl w-full max-h-96 overflow-y-auto">
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-2xl font-semibold text-tradicia-white">
-                  {selectedProject.title}
-                </h3>
-                <button 
-                  onClick={closeModal}
-                  className="text-gray-400 hover:text-white text-2xl"
-                >
-                  ×
-                </button>
-              </div>
-              <div className="text-center mb-6">
-                <div className="text-6xl mb-4">{selectedProject.icon}</div>
-                <p className="text-gray-300 leading-relaxed">
-                  {selectedProject.details}
+                <p className="text-sm leading-relaxed text-gray-300">
+                  {project.description}
                 </p>
               </div>
+
+              <div className="mt-auto flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-gray-300 transition-colors duration-300 group-hover:border-tradicia-blue/30 group-hover:text-tradicia-white"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-2 text-sm font-semibold text-tradicia-blue transition-transform duration-300 group-hover:translate-x-1">
+                <span>Смотреть кейс</span>
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden
+                >
+                  <path
+                    d="M3.5 8H12.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M8.5 4L12.5 8L8.5 12"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {selectedProject && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 px-4 py-10"
+          onClick={closeModal}
+        >
+          <div
+            className="glass-effect relative w-full max-w-3xl rounded-3xl border border-white/10 p-8 sm:p-10"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closeModal}
+              className="absolute right-6 top-6 text-3xl text-gray-400 transition hover:text-white"
+              aria-label="Закрыть модальное окно"
+            >
+              ×
+            </button>
+
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex items-center gap-4">
+                  <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-tradicia-blue/15 text-3xl">
+                    {selectedProject.icon}
+                  </span>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.35em] text-tradicia-blue/70">
+                      {selectedProject.subtitle}
+                    </p>
+                    <h3 className="mt-2 text-3xl font-semibold text-tradicia-white">
+                      {selectedProject.title}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-base leading-relaxed text-gray-300">
+                {selectedProject.details}
+              </p>
+
+              {selectedProject.result && (
+                <div className="rounded-2xl border border-tradicia-blue/40 bg-tradicia-blue/10 p-6 text-tradicia-white">
+                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-tradicia-blue/70">
+                    Результат
+                  </p>
+                  <p className="mt-2 text-lg leading-relaxed text-gray-100">
+                    {selectedProject.result}
+                  </p>
+                </div>
+              )}
+
+              {selectedProject.metrics && selectedProject.metrics.length > 0 && (
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {selectedProject.metrics.map((metric) => (
+                    <div
+                      key={metric.label}
+                      className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center"
+                    >
+                      <p className="text-xs uppercase tracking-[0.3em] text-tradicia-blue/70">
+                        {metric.label}
+                      </p>
+                      <p className="mt-2 text-lg font-semibold text-tradicia-white">
+                        {metric.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   )
-} 
+}
