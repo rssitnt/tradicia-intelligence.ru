@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-
 interface ProjectMetric {
   label: string
   value: string
@@ -55,29 +53,28 @@ const projectsData: Project[] = [
     ],
     result:
       'Снизили долю проблемных обращений на 28% за первый квартал внедрения.'
+  },
+  {
+    id: 3,
+    title: 'Telegram lead intelligence',
+    subtitle: 'Автоматическая вычитка заявок',
+    description:
+      'ИИ-агент парсит сообщения из тематических телеграм-чатов, выделяет заявки на навеску и подготавливает их для отдела продаж.',
+    details:
+      'Кластеризация и фильтрация потоков из Telegram-каналов помогает отделу продаж сфокусироваться на горячих лидах. LLM строит структурированные карточки клиента, определяет тип запроса и степень готовности, после чего отправляет запись в таблицу и CRM.',
+    icon: '📲',
+    tags: ['Telegram', 'Lead mining', 'Automation'],
+    metrics: [
+      { label: 'Чатов в подборке', value: '40+' },
+      { label: 'Новые лиды', value: '120/нед.' },
+      { label: 'Автозаполнение', value: 'Google Sheets' }
+    ],
+    result:
+      'Ускорили реакцию на тёплые запросы до 30 минут и увеличили конверсию в звонок на 22%.'
   }
 ]
 
 export default function ProjectsSection() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-
-  const projects = useMemo(() => projectsData, [])
-
-  useEffect(() => {
-    if (!selectedProject) {
-      return
-    }
-
-    const originalOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-
-    return () => {
-      document.body.style.overflow = originalOverflow
-    }
-  }, [selectedProject])
-
-  const closeModal = () => setSelectedProject(null)
-
   return (
     <section
       id="projects"
@@ -92,12 +89,10 @@ export default function ProjectsSection() {
         </div>
 
         <div className="grid gap-6 sm:gap-8 justify-items-center md:justify-items-stretch md:grid-cols-2 xl:grid-cols-3">
-          {projects.map((project) => (
-            <button
+          {projectsData.map((project) => (
+            <div
               key={project.id}
-              type="button"
-              onClick={() => setSelectedProject(project)}
-              className="group glass-effect flex h-full w-full max-w-[26rem] flex-col gap-6 rounded-3xl border border-white/5 p-6 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-tradicia-blue/80 md:max-w-none"
+              className="group glass-effect flex h-full w-full max-w-[26rem] flex-col gap-6 rounded-3xl border border-white/5 p-6 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20 md:max-w-none"
             >
               <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-tradicia-blue/15 text-3xl">
                 {project.icon}
@@ -127,108 +122,10 @@ export default function ProjectsSection() {
                   </span>
                 ))}
               </div>
-
-              <div className="flex items-center gap-2 text-sm font-semibold text-tradicia-blue transition-transform duration-300 group-hover:translate-x-1">
-                <span>Смотреть кейс</span>
-                <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden
-                >
-                  <path
-                    d="M3.5 8H12.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M8.5 4L12.5 8L8.5 12"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-            </button>
+            </div>
           ))}
         </div>
       </div>
-
-      {selectedProject && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 px-4 py-10"
-          onClick={closeModal}
-        >
-          <div
-            className="glass-effect relative w-full max-w-3xl rounded-3xl border border-white/10 p-8 sm:p-10"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={closeModal}
-              className="absolute right-6 top-6 text-3xl text-gray-400 transition hover:text-white"
-              aria-label="Закрыть модальное окно"
-            >
-              ×
-            </button>
-
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex items-center gap-4">
-                  <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-tradicia-blue/15 text-3xl">
-                    {selectedProject.icon}
-                  </span>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.35em] text-tradicia-blue/70">
-                      {selectedProject.subtitle}
-                    </p>
-                    <h3 className="mt-2 text-3xl font-semibold text-tradicia-white">
-                      {selectedProject.title}
-                    </h3>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-base leading-relaxed text-gray-300">
-                {selectedProject.details}
-              </p>
-
-              {selectedProject.result && (
-                <div className="rounded-2xl border border-tradicia-blue/40 bg-tradicia-blue/10 p-6 text-tradicia-white">
-                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-tradicia-blue/70">
-                    Результат
-                  </p>
-                  <p className="mt-2 text-lg leading-relaxed text-gray-100">
-                    {selectedProject.result}
-                  </p>
-                </div>
-              )}
-
-              {selectedProject.metrics && selectedProject.metrics.length > 0 && (
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {selectedProject.metrics.map((metric) => (
-                    <div
-                      key={metric.label}
-                      className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center"
-                    >
-                      <p className="text-xs uppercase tracking-[0.3em] text-tradicia-blue/70">
-                        {metric.label}
-                      </p>
-                      <p className="mt-2 text-lg font-semibold text-tradicia-white">
-                        {metric.value}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   )
 }
