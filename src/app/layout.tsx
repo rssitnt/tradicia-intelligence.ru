@@ -31,6 +31,7 @@ export default function RootLayout({
             }
           `
         }} />
+        <script src="//code.jivo.ru/widget/EbcLy5Gqlg" async></script>
       </head>
       <body className={`${inter.className} min-h-screen loaded`}>
         <script dangerouslySetInnerHTML={{
