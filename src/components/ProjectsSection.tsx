@@ -84,11 +84,11 @@ export default function ProjectsSection() {
           </h2>
         </div>
 
-        <div className="grid gap-3 sm:gap-4 justify-items-center md:justify-items-stretch md:grid-cols-2 xl:grid-cols-3">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
           {projectsData.map((project) => (
             <div
               key={project.id}
-              className="group glass-effect flex h-full w-full max-w-[12rem] flex-col gap-3 rounded-3xl border border-white/5 p-3 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20 md:max-w-[12rem]"
+              className="group glass-effect flex h-full w-48 sm:w-52 flex-col gap-3 rounded-3xl border border-white/5 p-3 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20"
             >
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-tradicia-blue/15 text-xl">
                 {project.icon}
