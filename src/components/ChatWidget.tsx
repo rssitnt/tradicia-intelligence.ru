@@ -134,6 +134,19 @@ export default function ChatWidget() {
     }
   };
 
+  const handleClearHistory = () => {
+    // Очищаем историю
+    setMessages([]);
+    localStorage.removeItem('chatMessages');
+    
+    // Генерируем новый conversation_id
+    const newId = `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    setConversationId(newId);
+    localStorage.setItem('conversationId', newId);
+    
+    console.log('История чата очищена');
+  };
+
   return (
     <>
       {/* Плавающая кнопка */}
@@ -159,15 +172,27 @@ export default function ChatWidget() {
           {/* Заголовок */}
           <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
             <h3 className="font-semibold text-lg">Онлайн-консультант</h3>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="hover:bg-blue-700 rounded p-1 transition-colors"
-              aria-label="Закрыть чат"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleClearHistory}
+                className="hover:bg-blue-700 rounded p-1 transition-colors"
+                aria-label="Очистить историю"
+                title="Очистить историю"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="hover:bg-blue-700 rounded p-1 transition-colors"
+                aria-label="Закрыть чат"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           {/* Область сообщений */}
