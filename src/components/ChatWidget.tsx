@@ -153,13 +153,13 @@ export default function ChatWidget() {
       {/* Плавающая кнопка */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 left-6 z-50 w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${
+        className={`fixed bottom-4 left-4 md:bottom-6 md:left-6 z-50 w-14 h-14 md:w-16 md:h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${
           isOpen ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-transparent hover:scale-105'
         }`}
         aria-label="Открыть чат"
       >
         {isOpen ? (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         ) : (
@@ -168,7 +168,7 @@ export default function ChatWidget() {
             alt="Чатбот"
             width={64}
             height={64}
-            className="w-16 h-16 object-contain"
+            className="w-14 h-14 md:w-16 md:h-16 object-contain"
             quality={100}
             priority
             unoptimized
@@ -178,7 +178,7 @@ export default function ChatWidget() {
 
       {/* Панель чата */}
       {isOpen && (
-        <div className="fixed bottom-24 left-6 z-50 w-[calc(100%-3rem)] md:w-96 h-[400px] max-h-[70vh] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-20 md:bottom-24 left-4 right-4 md:left-6 md:right-auto z-50 md:w-96 h-[400px] max-h-[70vh] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           {/* Заголовок */}
           <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
             <h3 className="font-semibold text-lg">ИИ-консультант</h3>
@@ -242,8 +242,8 @@ export default function ChatWidget() {
           </div>
 
           {/* Поле ввода */}
-          <div className="p-4 bg-white border-t border-gray-200">
-            <div className="flex gap-2">
+          <div className="p-3 sm:p-4 bg-white border-t border-gray-200">
+            <div className="flex gap-1.5 sm:gap-2 items-center">
               <input
                 type="text"
                 value={inputValue}
@@ -251,12 +251,12 @@ export default function ChatWidget() {
                 onKeyPress={handleKeyPress}
                 placeholder=""
                 disabled={isLoading}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 text-gray-800"
+                className="flex-1 min-w-0 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 text-gray-800 text-sm"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={isLoading || !inputValue.trim()}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-shrink-0 bg-blue-600 hover:bg-blue-700 text-white px-2.5 sm:px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 aria-label="Отправить сообщение"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
