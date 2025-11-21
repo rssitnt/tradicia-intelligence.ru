@@ -94,18 +94,22 @@ export default function ChatWidget() {
       const responseText = await response.text();
       console.log('Ответ от сервера (текст):', responseText);
       
-      let data;
+      let content = '';
+      
+      // Пробуем распарсить как JSON
       try {
-        data = JSON.parse(responseText);
+        const data = JSON.parse(responseText);
         console.log('Ответ от сервера (JSON):', data);
+        content = data.output || data.reply || data.response || data.message || '';
       } catch (e) {
-        console.error('Не удалось распарсить JSON:', e);
-        throw new Error('Неверный формат ответа');
+        // Если не JSON, используем сам текст как ответ
+        console.log('Ответ пришёл как обычный текст, используем его напрямую');
+        content = responseText;
       }
       
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.output || data.reply || data.response || data.message || responseText || 'Извините, не удалось получить ответ.',
+        content: content || 'Извините, не удалось получить ответ.',
       };
 
       setMessages([...updatedMessages, assistantMessage]);
