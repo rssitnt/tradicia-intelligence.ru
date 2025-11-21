@@ -153,7 +153,7 @@ export default function ChatWidget() {
       {/* Плавающая кнопка */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${
+        className={`fixed bottom-6 left-6 z-50 w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${
           isOpen ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-transparent hover:scale-105'
         }`}
         aria-label="Открыть чат"
@@ -168,7 +168,7 @@ export default function ChatWidget() {
             alt="Чатбот"
             width={64}
             height={64}
-            className="w-14 h-14 object-contain"
+            className="w-16 h-16 object-contain"
             quality={100}
             priority
             unoptimized
