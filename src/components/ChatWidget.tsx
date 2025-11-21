@@ -68,26 +68,44 @@ export default function ChatWidget() {
     setIsLoading(true);
 
     try {
+      const requestBody = {
+        conversation_id: conversationId,
+        messages: updatedMessages,
+      };
+      
+      console.log('Отправка запроса:', requestBody);
+
       const response = await fetch(CHAT_BACKEND_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          conversation_id: conversationId,
-          messages: updatedMessages,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
+      console.log('Статус ответа:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Ошибка сети');
+        const errorText = await response.text();
+        console.error('Ошибка ответа:', errorText);
+        throw new Error(`Ошибка сети: ${response.status}`);
       }
 
-      const data = await response.json();
+      const responseText = await response.text();
+      console.log('Ответ от сервера (текст):', responseText);
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        console.log('Ответ от сервера (JSON):', data);
+      } catch (e) {
+        console.error('Не удалось распарсить JSON:', e);
+        throw new Error('Неверный формат ответа');
+      }
       
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.reply || 'Извините, не удалось получить ответ.',
+        content: data.reply || data.response || data.message || responseText || 'Извините, не удалось получить ответ.',
       };
 
       setMessages([...updatedMessages, assistantMessage]);
