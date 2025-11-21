@@ -153,7 +153,7 @@ export default function ChatWidget() {
       {/* Плавающая кнопка */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-4 left-4 md:bottom-6 md:left-6 z-50 w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${
+        className={`fixed bottom-5 left-5 z-50 w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${
           isOpen ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-transparent hover:scale-105'
         }`}
         aria-label="Открыть чат"
@@ -178,7 +178,7 @@ export default function ChatWidget() {
 
       {/* Панель чата */}
       {isOpen && (
-        <div className="fixed bottom-20 md:bottom-24 left-4 right-4 md:left-6 md:right-auto z-50 md:w-96 h-[400px] max-h-[70vh] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-24 left-4 right-4 md:left-5 md:right-auto z-50 md:w-96 h-[400px] max-h-[70vh] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           {/* Заголовок */}
           <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
             <h3 className="font-semibold text-lg">ИИ-консультант</h3>
