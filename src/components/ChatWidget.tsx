@@ -164,7 +164,7 @@ export default function ChatWidget() {
           </svg>
         ) : (
           <Image 
-            src="/chatbot.png"
+            src="/aichat.png"
             alt="Чатбот"
             width={96}
             height={96}
