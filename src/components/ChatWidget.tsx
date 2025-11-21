@@ -171,7 +171,7 @@ export default function ChatWidget() {
         <div className="fixed bottom-24 left-6 z-50 w-[calc(100%-3rem)] md:w-96 h-[400px] max-h-[70vh] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           {/* Заголовок */}
           <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
-            <h3 className="font-semibold text-lg">Онлайн-консультант</h3>
+            <h3 className="font-semibold text-lg">ИИ-консультант</h3>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleClearHistory}

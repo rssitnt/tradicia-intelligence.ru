@@ -60,13 +60,14 @@ export default function ContactsSection() {
             >
               <div className="flex items-stretch gap-4 h-full">
                 {/* Фото */}
-                <div className="relative w-20 sm:w-24 flex-shrink-0 overflow-hidden rounded-xl self-stretch">
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0 overflow-hidden rounded-xl">
                   <Image
                     src={contact.photo}
                     alt={contact.name}
                     fill
                     className="object-cover"
-                    sizes="(min-width: 640px) 96px, 80px"
+                    sizes="(min-width: 640px) 128px, 112px"
+                    quality={95}
                   />
                 </div>
 
