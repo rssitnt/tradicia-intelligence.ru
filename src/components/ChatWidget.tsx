@@ -105,7 +105,7 @@ export default function ChatWidget() {
       
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.reply || data.response || data.message || responseText || 'Извините, не удалось получить ответ.',
+        content: data.output || data.reply || data.response || data.message || responseText || 'Извините, не удалось получить ответ.',
       };
 
       setMessages([...updatedMessages, assistantMessage]);
