@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 // n8n webhook для обработки сообщений чата через Gemini
-const CHAT_BACKEND_URL = 'https://n8n-api.tradicia-k.ru/webhook-test/03e8b98b-893f-413b-aa3c-94782b5a02db';
+const CHAT_BACKEND_URL = 'https://n8n-api.tradicia-k.ru/webhook/03e8b98b-893f-413b-aa3c-94782b5a02db';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
@@ -155,7 +155,7 @@ export default function ChatWidget() {
 
       {/* Панель чата */}
       {isOpen && (
-        <div className="fixed bottom-24 left-6 z-50 w-[calc(100%-3rem)] md:w-96 h-[500px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-24 left-6 z-50 w-[calc(100%-3rem)] md:w-96 h-[400px] max-h-[70vh] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           {/* Заголовок */}
           <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
             <h3 className="font-semibold text-lg">Онлайн-консультант</h3>
@@ -171,7 +171,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Область сообщений */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-400">
             {messages.length === 0 && (
               <div className="text-center text-gray-500 mt-8">
                 <p>Здравствуйте! Чем могу помочь?</p>
