@@ -153,7 +153,9 @@ export default function ChatWidget() {
       {/* Плавающая кнопка */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-50 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200"
+        className={`fixed bottom-6 left-6 z-50 w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${
+          isOpen ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-transparent hover:scale-110'
+        }`}
         aria-label="Открыть чат"
       >
         {isOpen ? (
@@ -164,9 +166,10 @@ export default function ChatWidget() {
           <Image 
             src="/chatbot.png"
             alt="Чатбот"
-            width={32}
-            height={32}
-            className="w-8 h-8"
+            width={64}
+            height={64}
+            className="w-16 h-16 object-contain"
+            quality={100}
           />
         )}
       </button>
