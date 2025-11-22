@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // n8n webhook для обработки сообщений чата через Gemini
 const CHAT_BACKEND_URL = 'https://n8n-api.tradicia-k.ru/webhook/03e8b98b-893f-413b-aa3c-94782b5a02db';
@@ -17,6 +19,7 @@ export default function ChatWidget() {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string>('');
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Инициализация: загрузка истории и conversation_id из localStorage
@@ -146,6 +149,11 @@ export default function ChatWidget() {
     localStorage.setItem('conversationId', newId);
     
     console.log('История чата очищена');
+    setShowClearConfirm(false);
+  };
+
+  const handleClearClick = () => {
+    setShowClearConfirm(true);
   };
 
   return (
@@ -184,7 +192,7 @@ export default function ChatWidget() {
             <h3 className="font-semibold text-lg">ИИ-консультант</h3>
             <div className="flex items-center gap-2">
               <button
-                onClick={handleClearHistory}
+                onClick={handleClearClick}
                 className="hover:bg-blue-700 rounded p-1 transition-colors"
                 aria-label="Очистить историю"
                 title="Очистить историю"
@@ -225,7 +233,15 @@ export default function ChatWidget() {
                       : 'bg-white text-gray-800 border border-gray-200'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                  {message.role === 'user' ? (
+                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                  ) : (
+                    <div className="text-sm prose prose-sm max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-headings:my-2 prose-headings:font-semibold prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-pre:bg-gray-100 prose-pre:p-2 prose-pre:rounded prose-strong:font-semibold prose-em:italic">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {message.content}
+                      </ReactMarkdown>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -262,6 +278,34 @@ export default function ChatWidget() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Модальное окно подтверждения очистки */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-50 px-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              Подтверждение
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Вы точно хотите начать чат с нуля?
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowClearConfirm(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={handleClearHistory}
+                className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+              >
+                Очистить
               </button>
             </div>
           </div>
