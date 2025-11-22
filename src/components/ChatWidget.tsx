@@ -240,20 +240,20 @@ export default function ChatWidget() {
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                          p: ({children}) => <p className="my-1">{children}</p>,
-                          strong: ({children}) => <strong className="font-bold">{children}</strong>,
-                          em: ({children}) => <em className="italic">{children}</em>,
-                          ul: ({children}) => <ul className="list-disc ml-4 my-1">{children}</ul>,
-                          ol: ({children}) => <ol className="list-decimal ml-4 my-1">{children}</ol>,
-                          li: ({children}) => <li className="my-0">{children}</li>,
-                          a: ({href, children}) => <a href={href} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">{children}</a>,
-                          code: ({inline, children}: any) => 
+                          p: ({node, ...props}) => <p className="my-1" {...props} />,
+                          strong: ({node, ...props}) => <strong className="font-bold" {...props} />,
+                          em: ({node, ...props}) => <em className="italic" {...props} />,
+                          ul: ({node, ...props}) => <ul className="list-disc ml-4 my-1" {...props} />,
+                          ol: ({node, ...props}) => <ol className="list-decimal ml-4 my-1" {...props} />,
+                          li: ({node, ...props}) => <li className="my-0" {...props} />,
+                          a: ({node, ...props}) => <a className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+                          code: ({node, inline, ...props}: any) => 
                             inline 
-                              ? <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>
-                              : <code className="block bg-gray-100 p-2 rounded my-1 text-xs overflow-x-auto">{children}</code>,
-                          h1: ({children}) => <h1 className="text-lg font-bold my-2">{children}</h1>,
-                          h2: ({children}) => <h2 className="text-base font-bold my-2">{children}</h2>,
-                          h3: ({children}) => <h3 className="text-sm font-bold my-2">{children}</h3>,
+                              ? <code className="bg-gray-100 px-1 py-0.5 rounded text-xs" {...props} />
+                              : <code className="block bg-gray-100 p-2 rounded my-1 text-xs overflow-x-auto" {...props} />,
+                          h1: ({node, ...props}) => <h1 className="text-lg font-bold my-2" {...props} />,
+                          h2: ({node, ...props}) => <h2 className="text-base font-bold my-2" {...props} />,
+                          h3: ({node, ...props}) => <h3 className="text-sm font-bold my-2" {...props} />,
                         }}
                       >
                         {message.content}
