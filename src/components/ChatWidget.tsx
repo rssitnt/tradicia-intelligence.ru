@@ -234,7 +234,7 @@ export default function ChatWidget() {
                   }`}
                 >
                   {message.role === 'user' ? (
-                    <p className="text-sm whitespace-pre-wrap break-words text-left">{message.content}</p>
+                    <p className="text-sm whitespace-pre-wrap break-words text-right">{message.content}</p>
                   ) : (
                     <div className="text-sm markdown-content text-left">
                       <ReactMarkdown
