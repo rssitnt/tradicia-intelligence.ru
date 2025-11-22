@@ -236,8 +236,26 @@ export default function ChatWidget() {
                   {message.role === 'user' ? (
                     <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
                   ) : (
-                    <div className="text-sm prose prose-sm max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-headings:my-2 prose-headings:font-semibold prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-pre:bg-gray-100 prose-pre:p-2 prose-pre:rounded prose-strong:font-semibold prose-em:italic">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    <div className="text-sm markdown-content">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          p: ({children}) => <p className="my-1">{children}</p>,
+                          strong: ({children}) => <strong className="font-bold">{children}</strong>,
+                          em: ({children}) => <em className="italic">{children}</em>,
+                          ul: ({children}) => <ul className="list-disc ml-4 my-1">{children}</ul>,
+                          ol: ({children}) => <ol className="list-decimal ml-4 my-1">{children}</ol>,
+                          li: ({children}) => <li className="my-0">{children}</li>,
+                          a: ({href, children}) => <a href={href} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">{children}</a>,
+                          code: ({inline, children}: any) => 
+                            inline 
+                              ? <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>
+                              : <code className="block bg-gray-100 p-2 rounded my-1 text-xs overflow-x-auto">{children}</code>,
+                          h1: ({children}) => <h1 className="text-lg font-bold my-2">{children}</h1>,
+                          h2: ({children}) => <h2 className="text-base font-bold my-2">{children}</h2>,
+                          h3: ({children}) => <h3 className="text-sm font-bold my-2">{children}</h3>,
+                        }}
+                      >
                         {message.content}
                       </ReactMarkdown>
                     </div>
