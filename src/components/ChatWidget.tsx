@@ -234,9 +234,9 @@ export default function ChatWidget() {
                   }`}
                 >
                   {message.role === 'user' ? (
-                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                    <p className="text-sm whitespace-pre-wrap break-words text-left">{message.content}</p>
                   ) : (
-                    <div className="text-sm markdown-content">
+                    <div className="text-sm markdown-content text-left">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
@@ -267,7 +267,7 @@ export default function ChatWidget() {
             {isLoading && (
               <div className="flex w-full justify-start">
                 <div className="max-w-[80%] rounded-lg px-4 py-2 bg-white text-gray-800 border border-gray-200">
-                  <p className="text-sm text-gray-500">Ассистент печатает...</p>
+                  <p className="text-sm text-gray-500 text-left">Ассистент печатает...</p>
                 </div>
               </div>
             )}
