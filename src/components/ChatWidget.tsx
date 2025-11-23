@@ -23,6 +23,7 @@ export default function ChatWidget() {
   const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Инициализация: загрузка истории и conversation_id из localStorage
   useEffect(() => {
@@ -86,6 +87,14 @@ export default function ChatWidget() {
       }
     }
   }, []);
+
+  // Автоматическое изменение высоты textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`;
+    }
+  }, [inputValue]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -161,7 +170,7 @@ export default function ChatWidget() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -204,18 +213,12 @@ export default function ChatWidget() {
   return (
     <>
       {/* Плавающая кнопка */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-5 left-5 z-50 w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 ${
-          isOpen ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-transparent hover:scale-105'
-        }`}
-        aria-label="Открыть чат"
-      >
-        {isOpen ? (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-5 left-5 z-50 w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 bg-transparent hover:scale-105"
+          aria-label="Открыть чат"
+        >
           <Image 
             src="/aichat.png"
             alt="Чатбот"
@@ -226,12 +229,12 @@ export default function ChatWidget() {
             priority
             unoptimized
           />
-        )}
-      </button>
+        </button>
+      )}
 
       {/* Панель чата */}
       {isOpen && (
-        <div className="fixed bottom-24 left-4 right-4 md:left-5 md:right-auto z-50 md:w-96 h-[400px] max-h-[70vh] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-5 left-5 right-4 md:right-auto z-50 md:w-96 h-[500px] max-h-[calc(100vh-3rem)] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           {/* Заголовок */}
           <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
             <h3 className="font-semibold text-lg">ИИ-консультант</h3>
@@ -322,15 +325,17 @@ export default function ChatWidget() {
 
           {/* Поле ввода */}
           <div className="p-3 sm:p-4 bg-white border-t border-gray-200">
-            <div className="flex gap-1.5 sm:gap-2 items-center">
-              <input
-                type="text"
+            <div className="flex gap-1.5 sm:gap-2 items-end">
+              <textarea
+                ref={textareaRef}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={isRecording ? "Слушаю..." : ""}
                 disabled={isLoading || isRecording}
-                className="flex-1 min-w-0 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 text-gray-800 text-sm"
+                rows={1}
+                className="flex-1 min-w-0 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 text-gray-800 text-sm resize-none overflow-hidden leading-tight"
+                style={{ minHeight: '40px', maxHeight: '150px' }}
               />
               <button
                 onClick={handleMicrophoneClick}
