@@ -20,7 +20,9 @@ export default function ChatWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string>('');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
 
   // Инициализация: загрузка истории и conversation_id из localStorage
   useEffect(() => {
@@ -56,6 +58,34 @@ export default function ChatWidget() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Инициализация Web Speech API
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = false;
+        recognitionRef.current.lang = 'ru-RU';
+
+        recognitionRef.current.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript;
+          setInputValue(transcript);
+          setIsRecording(false);
+        };
+
+        recognitionRef.current.onerror = (event: any) => {
+          console.error('Ошибка распознавания речи:', event.error);
+          setIsRecording(false);
+        };
+
+        recognitionRef.current.onend = () => {
+          setIsRecording(false);
+        };
+      }
+    }
+  }, []);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -154,6 +184,21 @@ export default function ChatWidget() {
 
   const handleClearClick = () => {
     setShowClearConfirm(true);
+  };
+
+  const handleMicrophoneClick = () => {
+    if (!recognitionRef.current) {
+      alert('Распознавание речи не поддерживается в вашем браузере');
+      return;
+    }
+
+    if (isRecording) {
+      recognitionRef.current.stop();
+      setIsRecording(false);
+    } else {
+      setIsRecording(true);
+      recognitionRef.current.start();
+    }
   };
 
   return (
@@ -283,14 +328,28 @@ export default function ChatWidget() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder=""
-                disabled={isLoading}
+                placeholder={isRecording ? "Слушаю..." : ""}
+                disabled={isLoading || isRecording}
                 className="flex-1 min-w-0 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 text-gray-800 text-sm"
               />
               <button
+                onClick={handleMicrophoneClick}
+                disabled={isLoading}
+                className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full transition-colors ${
+                  isRecording 
+                    ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse' 
+                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                aria-label="Голосовой ввод"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+              </button>
+              <button
                 onClick={handleSendMessage}
                 disabled={isLoading || !inputValue.trim()}
-                className="flex-shrink-0 bg-blue-600 hover:bg-blue-700 text-white px-2.5 sm:px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 aria-label="Отправить сообщение"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

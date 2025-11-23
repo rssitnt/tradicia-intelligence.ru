@@ -19,7 +19,7 @@ interface Project {
 const projectsData: Project[] = [
   {
     id: 1,
-    title: 'CRM-агент',
+    title: 'Саммари звонков с клиентом для менеджеров',
     subtitle: 'Виртуальный помощник для продаж',
     description:
       'Автоматизировали обработку звонков: распознаём речь, составляем саммари и предлагаем менеджеру следующие действия.',
@@ -67,6 +67,23 @@ const projectsData: Project[] = [
     ],
     result:
       'Ускорили реакцию на тёплые запросы до 30 минут и увеличили конверсию в звонок на 22%.'
+  },
+  {
+    id: 4,
+    title: 'Генерация иконок и логотипов',
+    subtitle: 'Креативный дизайн через ИИ',
+    description:
+      'С помощью генеративных моделей создали более 100 уникальных иконок и логотипов для различных проектов и клиентов.',
+    details:
+      'Используя современные ИИ-модели для генерации изображений, мы разработали систему создания качественных визуальных элементов. Процесс включает тщательную настройку промптов, пост-обработку и адаптацию под требования брендбуков клиентов.',
+    icon: '🎨',
+    metrics: [
+      { label: 'Создано элементов', value: '100+' },
+      { label: 'Время генерации', value: '5 мин/шт' },
+      { label: 'Экономия бюджета', value: '70%' }
+    ],
+    result:
+      'Сократили время создания визуальных элементов с нескольких дней до нескольких часов, обеспечив высокое качество и уникальность.'
   }
 ]
 
@@ -76,11 +93,10 @@ export default function ProjectsSection() {
       id="projects"
       className="relative overflow-hidden bg-black py-24 px-6 sm:px-10"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(26,112,255,0.12),_transparent_55%)]" />
       <div className="container relative z-10 mx-auto max-w-6xl">
         <div className="mx-auto mb-16 max-w-3xl text-center">
           <h2 className="mt-6 text-4xl font-bold text-tradicia-white sm:text-5xl">
-            Проекты
+            Кейсы
           </h2>
         </div>
 
@@ -88,7 +104,7 @@ export default function ProjectsSection() {
           {projectsData.map((project) => (
             <div
               key={project.id}
-              className="group glass-effect flex h-full w-48 sm:w-52 flex-col gap-3 rounded-3xl border border-white/5 p-3 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20"
+              className="group glass-effect flex h-[280px] w-48 sm:w-52 flex-col gap-3 rounded-3xl border border-white/5 p-3 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20"
             >
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-tradicia-blue/15 text-xl">
                 {project.icon}
@@ -96,10 +112,7 @@ export default function ProjectsSection() {
 
               <div className="flex flex-col gap-3">
                 <div>
-                  <p className="text-[0.45rem] font-semibold uppercase tracking-[0.28em] text-tradicia-blue/70">
-                    {project.subtitle}
-                  </p>
-                  <h3 className="mt-2 text-lg font-semibold text-tradicia-white transition-colors duration-300 group-hover:text-tradicia-blue">
+                  <h3 className="text-lg font-semibold text-tradicia-white transition-colors duration-300 group-hover:text-tradicia-blue">
                     {project.title}
                   </h3>
                 </div>

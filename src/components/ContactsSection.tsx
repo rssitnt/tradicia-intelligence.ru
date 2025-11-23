@@ -19,7 +19,7 @@ const contacts: Contact[] = [
     telegram: '@rsstnt',
     email: 'kirillov.a@tradicia-k.ru',
     role: 'Тимлид',
-    photo: '/kirillov_a_studio.png'
+    photo: '/kirillov_a_studio_black.png'
   },
   {
     name: 'Шабуров Ян Сергеевич',

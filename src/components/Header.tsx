@@ -172,7 +172,7 @@ export default function Header() {
             onClick={() => scrollToSection('projects')}
             className="text-tradicia-white hover:text-tradicia-blue transition-all duration-500 ease-in-out transform hover:scale-105 whitespace-nowrap flex-shrink-0"
           >
-            Проекты
+            Кейсы
           </button>
           
           <button 
@@ -211,7 +211,7 @@ export default function Header() {
                 onClick={() => scrollToSection('projects')}
                 className="block w-full text-left px-4 py-3 text-tradicia-white hover:text-tradicia-blue hover:bg-white/10 transition-all duration-300"
               >
-                Проекты
+                Кейсы
               </button>
               
               <button 
