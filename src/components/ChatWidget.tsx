@@ -8,7 +8,7 @@ import remarkGfm from 'remark-gfm';
 // n8n webhook для обработки сообщений чата через Gemini
 const CHAT_BACKEND_URL = 'https://n8n-api.tradicia-k.ru/webhook/03e8b98b-893f-413b-aa3c-94782b5a02db';
 // n8n webhook для отправки обратной связи
-const FEEDBACK_WEBHOOK_URL = 'https://n8n-api.tradicia-k.ru/webhook-test/tradiciarevenuebot';
+const FEEDBACK_WEBHOOK_URL = 'https://n8n-api.tradicia-k.ru/webhook/tradiciarevenuebot';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
