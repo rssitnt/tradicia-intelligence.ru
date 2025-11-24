@@ -27,14 +27,21 @@ export default function ChatWidget() {
   const [isRecording, setIsRecording] = useState(false);
   const [showFeedbackFor, setShowFeedbackFor] = useState<number | null>(null);
   const [feedbackText, setFeedbackText] = useState('');
+  const [isFeedbackRecording, setIsFeedbackRecording] = useState(false);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [hasPhone, setHasPhone] = useState(false);
+  const [pendingMessage, setPendingMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const feedbackRecognitionRef = useRef<any>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Инициализация: загрузка истории и conversation_id из localStorage
   useEffect(() => {
     const storedMessages = localStorage.getItem('chatMessages');
     const storedConversationId = localStorage.getItem('conversationId');
+    const storedPhone = localStorage.getItem('userPhone');
 
     if (storedMessages) {
       try {
@@ -51,6 +58,12 @@ export default function ChatWidget() {
       const newId = `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       setConversationId(newId);
       localStorage.setItem('conversationId', newId);
+    }
+
+    // Проверка сохраненного телефона
+    if (storedPhone) {
+      setHasPhone(true);
+      setPhoneNumber(storedPhone);
     }
   }, []);
 
@@ -71,6 +84,7 @@ export default function ChatWidget() {
     if (typeof window !== 'undefined') {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
+        // Распознавание для основного поля ввода
         recognitionRef.current = new SpeechRecognition();
         recognitionRef.current.continuous = false;
         recognitionRef.current.interimResults = false;
@@ -90,6 +104,27 @@ export default function ChatWidget() {
         recognitionRef.current.onend = () => {
           setIsRecording(false);
         };
+
+        // Распознавание для поля обратной связи
+        feedbackRecognitionRef.current = new SpeechRecognition();
+        feedbackRecognitionRef.current.continuous = false;
+        feedbackRecognitionRef.current.interimResults = false;
+        feedbackRecognitionRef.current.lang = 'ru-RU';
+
+        feedbackRecognitionRef.current.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript;
+          setFeedbackText(transcript);
+          setIsFeedbackRecording(false);
+        };
+
+        feedbackRecognitionRef.current.onerror = (event: any) => {
+          console.error('Ошибка распознавания речи для обратной связи:', event.error);
+          setIsFeedbackRecording(false);
+        };
+
+        feedbackRecognitionRef.current.onend = () => {
+          setIsFeedbackRecording(false);
+        };
       }
     }
   }, []);
@@ -105,6 +140,13 @@ export default function ChatWidget() {
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
 
+    // Проверяем, есть ли телефон пользователя
+    if (!hasPhone) {
+      setPendingMessage(inputValue.trim());
+      setShowPhoneModal(true);
+      return;
+    }
+
     const userMessage: Message = {
       role: 'user',
       content: inputValue.trim(),
@@ -117,10 +159,15 @@ export default function ChatWidget() {
     setIsLoading(true);
 
     try {
-      const requestBody = {
+      const requestBody: any = {
         conversation_id: conversationId,
         messages: updatedMessages,
       };
+      
+      // Добавляем телефон, если он есть
+      if (hasPhone && phoneNumber) {
+        requestBody.phone = phoneNumber;
+      }
       
       console.log('Отправка запроса:', requestBody);
 
@@ -216,6 +263,21 @@ export default function ChatWidget() {
     }
   };
 
+  const handleFeedbackMicrophoneClick = () => {
+    if (!feedbackRecognitionRef.current) {
+      alert('Распознавание речи не поддерживается в вашем браузере');
+      return;
+    }
+
+    if (isFeedbackRecording) {
+      feedbackRecognitionRef.current.stop();
+      setIsFeedbackRecording(false);
+    } else {
+      setIsFeedbackRecording(true);
+      feedbackRecognitionRef.current.start();
+    }
+  };
+
   const handleRating = (messageIndex: number, rating: 'positive' | 'negative') => {
     const updatedMessages = [...messages];
     // Если текущая оценка совпадает с новой, убираем оценку (toggle)
@@ -223,6 +285,11 @@ export default function ChatWidget() {
       updatedMessages[messageIndex].rating = null;
       setShowFeedbackFor(null);
       setFeedbackText('');
+      // Останавливаем запись, если она была активна
+      if (isFeedbackRecording && feedbackRecognitionRef.current) {
+        feedbackRecognitionRef.current.stop();
+        setIsFeedbackRecording(false);
+      }
     } else {
       updatedMessages[messageIndex].rating = rating;
       // Показываем поле обратной связи только для негативной оценки
@@ -232,6 +299,11 @@ export default function ChatWidget() {
       } else {
         setShowFeedbackFor(null);
         setFeedbackText('');
+        // Останавливаем запись, если она была активна
+        if (isFeedbackRecording && feedbackRecognitionRef.current) {
+          feedbackRecognitionRef.current.stop();
+          setIsFeedbackRecording(false);
+        }
       }
     }
     setMessages(updatedMessages);
@@ -239,6 +311,12 @@ export default function ChatWidget() {
   };
 
   const handleFeedbackSubmit = async (messageIndex: number) => {
+    // Останавливаем запись, если она была активна
+    if (isFeedbackRecording && feedbackRecognitionRef.current) {
+      feedbackRecognitionRef.current.stop();
+      setIsFeedbackRecording(false);
+    }
+
     const updatedMessages = [...messages];
     updatedMessages[messageIndex].feedback = feedbackText;
     setMessages(updatedMessages);
@@ -272,6 +350,98 @@ export default function ChatWidget() {
 
     setShowFeedbackFor(null);
     setFeedbackText('');
+  };
+
+  const handlePhoneSubmit = async () => {
+    // Простая валидация телефона (можно улучшить)
+    const cleanPhone = phoneNumber.replace(/\D/g, '');
+    if (cleanPhone.length < 10) {
+      alert('Пожалуйста, введите корректный номер телефона');
+      return;
+    }
+
+    // Сохраняем телефон
+    localStorage.setItem('userPhone', phoneNumber);
+    setHasPhone(true);
+    setShowPhoneModal(false);
+
+    // Отправляем ожидающее сообщение
+    if (pendingMessage) {
+      const userMessage: Message = {
+        role: 'user',
+        content: pendingMessage,
+      };
+
+      const updatedMessages = [...messages, userMessage];
+      setMessages(updatedMessages);
+      setInputValue('');
+      setPendingMessage('');
+      setIsLoading(true);
+
+      try {
+        const requestBody = {
+          conversation_id: conversationId,
+          messages: updatedMessages,
+          phone: phoneNumber, // Добавляем телефон в запрос
+        };
+        
+        console.log('Отправка запроса:', requestBody);
+
+        const response = await fetch(CHAT_BACKEND_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        console.log('Статус ответа:', response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Ошибка ответа:', errorText);
+          throw new Error(`Ошибка сети: ${response.status}`);
+        }
+
+        const responseText = await response.text();
+        console.log('Ответ от сервера (текст):', responseText);
+        
+        let content = '';
+        
+        try {
+          const data = JSON.parse(responseText);
+          console.log('Ответ от сервера (JSON):', data);
+          content = data.output || data.reply || data.response || data.message || '';
+        } catch (e) {
+          console.log('Ответ пришёл как обычный текст, используем его напрямую');
+          content = responseText;
+        }
+        
+        const assistantMessage: Message = {
+          role: 'assistant',
+          content: content || 'Извините, не удалось получить ответ.',
+        };
+
+        setMessages([...updatedMessages, assistantMessage]);
+      } catch (error) {
+        console.error('Ошибка отправки сообщения:', error);
+        
+        const errorMessage: Message = {
+          role: 'assistant',
+          content: 'Не удалось получить ответ, попробуйте ещё раз.',
+        };
+
+        setMessages([...updatedMessages, errorMessage]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const handlePhoneCancel = () => {
+    setShowPhoneModal(false);
+    setPendingMessage('');
+    setPhoneNumber('');
   };
 
   return (
@@ -416,26 +586,53 @@ export default function ChatWidget() {
                           <textarea
                             value={feedbackText}
                             onChange={(e) => setFeedbackText(e.target.value)}
-                            placeholder="Что именно вам не понравилось?"
-                            className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                            placeholder={isFeedbackRecording ? "Слушаю..." : "Что именно вам не понравилось?"}
+                            disabled={isFeedbackRecording}
+                            className="w-full px-2 py-1.5 text-xs text-gray-800 placeholder-gray-400 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none disabled:bg-gray-100"
                             rows={3}
                           />
-                          <div className="flex gap-2 mt-2 justify-end">
+                          <div className="flex gap-2 mt-2 justify-between items-center">
                             <button
                               onClick={() => {
                                 setShowFeedbackFor(null);
                                 setFeedbackText('');
+                                // Останавливаем запись, если она была активна
+                                if (isFeedbackRecording && feedbackRecognitionRef.current) {
+                                  feedbackRecognitionRef.current.stop();
+                                  setIsFeedbackRecording(false);
+                                }
                               }}
                               className="px-3 py-1 text-xs text-gray-600 hover:text-gray-800 transition-colors"
                             >
                               Отмена
                             </button>
-                            <button
-                              onClick={() => handleFeedbackSubmit(index)}
-                              className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
-                            >
-                              Отправить
-                            </button>
+                            <div className="flex gap-1.5">
+                              <button
+                                onClick={handleFeedbackMicrophoneClick}
+                                className={`p-1.5 rounded transition-all ${
+                                  isFeedbackRecording 
+                                    ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse' 
+                                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                                }`}
+                                aria-label="Голосовой ввод обратной связи"
+                                title="Голосовой ввод"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={() => handleFeedbackSubmit(index)}
+                                disabled={!feedbackText.trim()}
+                                className="p-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                aria-label="Отправить обратную связь"
+                                title="Отправить"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -531,6 +728,47 @@ export default function ChatWidget() {
                 className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
               >
                 Очистить
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Модальное окно запроса телефона */}
+      {showPhoneModal && (
+        <div className="fixed inset-0 z-[2147483648] flex items-center justify-center bg-black bg-opacity-50 px-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              Введите ваш телефон
+            </h3>
+            <p className="text-gray-600 mb-4 text-sm">
+              Для продолжения работы с ИИ-консультантом, пожалуйста, укажите ваш номер телефона
+            </p>
+            <input
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="+7 (999) 999-99-99"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 mb-4"
+              autoFocus
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handlePhoneSubmit();
+                }
+              }}
+            />
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={handlePhoneCancel}
+                className="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={handlePhoneSubmit}
+                className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+              >
+                Отправить
               </button>
             </div>
           </div>
