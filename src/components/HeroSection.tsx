@@ -14,6 +14,9 @@ export default function HeroSection() {
             fill
             className="object-cover"
             priority
+            quality={100}
+            sizes="(min-width: 768px) 75vw, 0vw"
+            unoptimized
           />
         </div>
       </div>
@@ -27,6 +30,9 @@ export default function HeroSection() {
             fill
             className="object-cover"
             priority
+            quality={100}
+            sizes="(max-width: 767px) 92vw, 0vw"
+            unoptimized
           />
         </div>
       </div>
@@ -41,6 +47,8 @@ export default function HeroSection() {
             height={540}
             className="w-1/2 h-auto max-w-full max-h-1/2 object-contain"
             priority
+            quality={100}
+            unoptimized
           />
         </div>
       </div>
@@ -55,6 +63,8 @@ export default function HeroSection() {
             height={540}
             className="w-1/2 h-auto max-w-full max-h-1/2 object-contain"
             priority
+            quality={100}
+            unoptimized
           />
         </div>
       </div>

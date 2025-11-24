@@ -7,10 +7,14 @@ import remarkGfm from 'remark-gfm';
 
 // n8n webhook для обработки сообщений чата через Gemini
 const CHAT_BACKEND_URL = 'https://n8n-api.tradicia-k.ru/webhook/03e8b98b-893f-413b-aa3c-94782b5a02db';
+// n8n webhook для отправки обратной связи
+const FEEDBACK_WEBHOOK_URL = 'https://n8n-api.tradicia-k.ru/webhook-test/tradiciarevenuebot';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
   content: string;
+  rating?: 'positive' | 'negative' | null;
+  feedback?: string;
 }
 
 export default function ChatWidget() {
@@ -21,6 +25,8 @@ export default function ChatWidget() {
   const [conversationId, setConversationId] = useState<string>('');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [showFeedbackFor, setShowFeedbackFor] = useState<number | null>(null);
+  const [feedbackText, setFeedbackText] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -210,13 +216,71 @@ export default function ChatWidget() {
     }
   };
 
+  const handleRating = (messageIndex: number, rating: 'positive' | 'negative') => {
+    const updatedMessages = [...messages];
+    // Если текущая оценка совпадает с новой, убираем оценку (toggle)
+    if (updatedMessages[messageIndex].rating === rating) {
+      updatedMessages[messageIndex].rating = null;
+      setShowFeedbackFor(null);
+      setFeedbackText('');
+    } else {
+      updatedMessages[messageIndex].rating = rating;
+      // Показываем поле обратной связи только для негативной оценки
+      if (rating === 'negative') {
+        setShowFeedbackFor(messageIndex);
+        setFeedbackText(updatedMessages[messageIndex].feedback || '');
+      } else {
+        setShowFeedbackFor(null);
+        setFeedbackText('');
+      }
+    }
+    setMessages(updatedMessages);
+    localStorage.setItem('chatMessages', JSON.stringify(updatedMessages));
+  };
+
+  const handleFeedbackSubmit = async (messageIndex: number) => {
+    const updatedMessages = [...messages];
+    updatedMessages[messageIndex].feedback = feedbackText;
+    setMessages(updatedMessages);
+    localStorage.setItem('chatMessages', JSON.stringify(updatedMessages));
+
+    // Отправка обратной связи на webhook
+    try {
+      const feedbackData = {
+        conversation_id: conversationId,
+        timestamp: new Date().toISOString(),
+        assistant_message: updatedMessages[messageIndex].content,
+        feedback: feedbackText,
+        rating: 'negative'
+      };
+
+      console.log('Отправка обратной связи на webhook:', feedbackData);
+
+      await fetch(FEEDBACK_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feedbackData),
+      });
+
+      console.log('Обратная связь успешно отправлена');
+    } catch (error) {
+      console.error('Ошибка при отправке обратной связи:', error);
+      // Не показываем ошибку пользователю, просто логируем
+    }
+
+    setShowFeedbackFor(null);
+    setFeedbackText('');
+  };
+
   return (
     <>
       {/* Плавающая кнопка */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-5 left-5 z-50 w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 bg-transparent hover:scale-105"
+          className="fixed bottom-5 left-5 z-[2147483647] w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 bg-transparent hover:scale-105"
           aria-label="Открыть чат"
         >
           <Image 
@@ -234,7 +298,7 @@ export default function ChatWidget() {
 
       {/* Панель чата */}
       {isOpen && (
-        <div className="fixed bottom-5 left-5 right-4 md:right-auto z-50 md:w-96 h-[500px] max-h-[calc(100vh-3rem)] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-5 left-5 right-24 md:right-auto z-[2147483647] md:w-96 h-[500px] max-h-[calc(100vh-3rem)] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden">
           {/* Заголовок */}
           <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
             <h3 className="font-semibold text-lg">ИИ-консультант</h3>
@@ -272,7 +336,7 @@ export default function ChatWidget() {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex w-full ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex flex-col w-full ${message.role === 'user' ? 'items-end' : 'items-start'}`}
               >
                 <div
                   className={`max-w-[80%] rounded-lg px-4 py-2 ${
@@ -309,6 +373,85 @@ export default function ChatWidget() {
                     </div>
                   )}
                 </div>
+                
+                {/* Кнопки оценки для сообщений ассистента */}
+                {message.role === 'assistant' && (
+                  <>
+                    <div className="flex gap-1 mt-1 ml-2">
+                      <button
+                        onClick={() => handleRating(index, 'positive')}
+                        className={`p-1 rounded transition-all ${
+                          message.rating === 'positive'
+                            ? 'bg-green-100 text-green-600'
+                            : 'text-gray-400 hover:text-green-600 hover:bg-green-50'
+                        }`}
+                        aria-label="Полезный ответ"
+                        title="Полезный ответ"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => handleRating(index, 'negative')}
+                        className={`p-1 rounded transition-all ${
+                          message.rating === 'negative'
+                            ? 'bg-red-100 text-red-600'
+                            : 'text-gray-400 hover:text-red-600 hover:bg-red-50'
+                        }`}
+                        aria-label="Бесполезный ответ"
+                        title="Бесполезный ответ"
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.105-1.79l-.05-.025A4 4 0 0011.055 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    {/* Поле обратной связи для негативной оценки */}
+                    {message.rating === 'negative' && showFeedbackFor === index && (
+                      <div className="mt-2 ml-2 max-w-[80%]">
+                        <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+                          <p className="text-xs text-gray-600 mb-2">Расскажите подробнее:</p>
+                          <textarea
+                            value={feedbackText}
+                            onChange={(e) => setFeedbackText(e.target.value)}
+                            placeholder="Что именно вам не понравилось?"
+                            className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                            rows={3}
+                          />
+                          <div className="flex gap-2 mt-2 justify-end">
+                            <button
+                              onClick={() => {
+                                setShowFeedbackFor(null);
+                                setFeedbackText('');
+                              }}
+                              className="px-3 py-1 text-xs text-gray-600 hover:text-gray-800 transition-colors"
+                            >
+                              Отмена
+                            </button>
+                            <button
+                              onClick={() => handleFeedbackSubmit(index)}
+                              className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
+                            >
+                              Отправить
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Отображение сохранённой обратной связи */}
+                    {message.rating === 'negative' && message.feedback && showFeedbackFor !== index && (
+                      <div className="mt-2 ml-2 max-w-[80%]">
+                        <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
+                          <p className="text-xs text-gray-500 mb-1">Ваш отзыв:</p>
+                          <p className="text-xs text-gray-700">{message.feedback}</p>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             ))}
 
@@ -368,7 +511,7 @@ export default function ChatWidget() {
 
       {/* Модальное окно подтверждения очистки */}
       {showClearConfirm && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-50 px-4">
+        <div className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black bg-opacity-50 px-4">
           <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-3">
               Подтверждение
