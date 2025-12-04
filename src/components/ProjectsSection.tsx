@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 interface ProjectMetric {
   label: string
   value: string
@@ -109,10 +111,15 @@ export default function ProjectsSection() {
               <div className="flex justify-center">
                 <span className="inline-flex h-48 w-48 items-center justify-center rounded-2xl overflow-hidden">
                   {project.icon.startsWith('/') ? (
-                    <img 
+                    <Image 
                       src={project.icon} 
                       alt={project.title}
+                      width={192}
+                      height={192}
                       className="w-full h-full object-contain"
+                      quality={100}
+                      unoptimized
+                      priority
                     />
                   ) : (
                     <span className="text-5xl">{project.icon}</span>
