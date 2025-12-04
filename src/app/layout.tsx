@@ -31,7 +31,9 @@ export default function RootLayout({
             }
           `
         }} />
-        <script src="//code.jivo.ru/widget/EbcLy5Gqlg" async></script>
+        <script dangerouslySetInnerHTML={{
+          __html: `(function () { var widget = document.createElement('script'); widget.defer = true; widget.dataset.pfId = '7f83315e-4f13-467a-afbd-b429577c44b7'; widget.src = 'https://widget.yourgood.app/script/widget.js?id=7f83315e-4f13-467a-afbd-b429577c44b7&now='+Date.now(); document.head.appendChild(widget); })()`
+        }} />
       </head>
       <body className={`${inter.className} min-h-screen loaded`}>
         <script dangerouslySetInnerHTML={{
