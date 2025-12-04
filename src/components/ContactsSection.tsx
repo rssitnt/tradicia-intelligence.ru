@@ -10,19 +10,21 @@ interface Contact {
   email: string
   role: string
   photo: string
+  website?: string
 }
 
 const contacts: Contact[] = [
   {
-    name: 'Кириллов Артём Кириллович',
+    name: 'Кириллов Артём',
     phone: '+7 (985) 853-13-67',
     telegram: '@rsstnt',
     email: 'kirillov.a@tradicia-k.ru',
     role: 'Тимлид',
-    photo: '/kirillov_a_studio_black.png'
+    photo: '/kirillov_a_studio_black.png',
+    website: 'https://www.kirillov-artem.ru/'
   },
   {
-    name: 'Шабуров Ян Сергеевич',
+    name: 'Шабуров Ян',
     phone: '+7 (985) 982-96-46',
     telegram: '@reflectitur',
     email: 'shaburov.y@tradicia-k.ru',
@@ -74,7 +76,18 @@ export default function ContactsSection() {
                 {/* Информация */}
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-tradicia-white mb-1">
-                    {contact.name}
+                    {contact.website ? (
+                      <a 
+                        href={contact.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-tradicia-blue transition-colors duration-300"
+                      >
+                        {contact.name}
+                      </a>
+                    ) : (
+                      contact.name
+                    )}
                   </h3>
                   <p className="text-tradicia-blue text-sm font-medium mb-3">
                     {contact.role}
