@@ -107,13 +107,13 @@ export default function ContactsSection() {
                     </div>
 
                     <div className="flex items-center gap-2 group">
-                      <div className="flex items-center justify-center w-8 h-8 flex-shrink-0">
+                      <div className="flex items-center justify-center w-4 h-4 flex-shrink-0">
                         <Image 
                           src="/tg-icon.png"
                           alt="Telegram"
-                          width={32}
-                          height={32}
-                          className="w-8 h-8 object-contain"
+                          width={16}
+                          height={16}
+                          className="w-4 h-4 object-contain"
                           quality={100}
                           unoptimized
                         />
