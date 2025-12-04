@@ -114,6 +114,8 @@ export default function ContactsSection() {
                           width={32}
                           height={32}
                           className="w-8 h-8 object-contain"
+                          quality={100}
+                          unoptimized
                         />
                       </div>
                       <a 
