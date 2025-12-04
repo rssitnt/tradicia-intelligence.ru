@@ -25,7 +25,7 @@ const projectsData: Project[] = [
       'Автоматизировали обработку звонков: распознаём речь, составляем саммари и предлагаем менеджеру следующие действия.',
     details:
       'Интегрированный CRM-агент переводит звонки в текст, выделяет 13 бизнес-показателей, оценивает эмоциональный тон и предлагает критические действия по удержанию клиента. Архитектура построена на пайплайне распознавания речи, смыслового анализа и векторного поиска — обучение производилось на реальных диалогах заказчика.',
-    icon: '🤖',
+    icon: '/summary_icon.jpg',
     metrics: [
       { label: 'Сэкономлено времени', value: '35%' },
       { label: 'Точность NER', value: '92%' },
@@ -106,8 +106,16 @@ export default function ProjectsSection() {
               key={project.id}
               className="group glass-effect flex h-[280px] w-48 sm:w-52 flex-col gap-3 rounded-3xl border border-white/5 p-3 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20"
             >
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-tradicia-blue/15 text-xl">
-                {project.icon}
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-tradicia-blue/15 overflow-hidden">
+                {project.icon.startsWith('/') ? (
+                  <img 
+                    src={project.icon} 
+                    alt={project.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-xl">{project.icon}</span>
+                )}
               </span>
 
               <div className="flex flex-col gap-3">
