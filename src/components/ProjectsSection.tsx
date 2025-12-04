@@ -109,20 +109,20 @@ export default function ProjectsSection() {
               className="group glass-effect flex w-full flex-col gap-3 rounded-3xl border border-white/5 p-3 text-left transition duration-300 hover:border-tradicia-blue/60 hover:shadow-2xl hover:shadow-tradicia-blue/20"
             >
               <div className="flex justify-center">
-                <span className="inline-flex h-48 w-48 items-center justify-center rounded-2xl overflow-hidden">
+                <span className="inline-flex h-24 w-24 items-center justify-center rounded-2xl overflow-hidden">
                   {project.icon.startsWith('/') ? (
                     <Image 
                       src={project.icon} 
                       alt={project.title}
-                      width={192}
-                      height={192}
+                      width={96}
+                      height={96}
                       className="w-full h-full object-contain"
                       quality={100}
                       unoptimized
                       priority
                     />
                   ) : (
-                    <span className="text-5xl">{project.icon}</span>
+                    <span className="text-3xl">{project.icon}</span>
                   )}
                 </span>
               </div>
