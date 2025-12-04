@@ -108,7 +108,7 @@ export default function ContactsSection() {
 
                     <div className="flex items-center gap-2 group">
                       <Image 
-                        src="/tg-icon.png"
+                        src="/tg.png"
                         alt="Telegram"
                         width={20}
                         height={20}
