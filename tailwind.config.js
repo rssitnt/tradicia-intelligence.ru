@@ -10,7 +10,7 @@ module.exports = {
       colors: {
         'tradicia-black': '#000000',
         'tradicia-dark': '#1A1A1A',
-        'tradicia-blue': '#004591',
+        'tradicia-blue': '#005ee4',
         'tradicia-white': '#FFFFFF',
       },
       animation: {
@@ -23,8 +23,8 @@ module.exports = {
           '50%': { transform: 'translateY(-20px)' },
         },
         glow: {
-          '0%': { boxShadow: '0 0 20px #004591' },
-          '100%': { boxShadow: '0 0 40px #004591, 0 0 60px #004591' },
+          '0%': { boxShadow: '0 0 20px #005ee4' },
+          '100%': { boxShadow: '0 0 40px #005ee4, 0 0 60px #005ee4' },
         }
       },
     },
