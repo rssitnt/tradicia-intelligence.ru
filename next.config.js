@@ -17,12 +17,12 @@ const nextConfig = {
     return [
       {
         source: '/simulator-studio',
-        destination: 'https://ti-client-simulator-studio-git-main-rsstnts-projects.vercel.app/',
+        destination: 'https://www.client-simulator.ru/',
         permanent: false,
       },
       {
         source: '/scouts',
-        destination: 'https://tradicia-scouts.vercel.app/',
+        destination: 'https://www.tradicia-scouts.ru/',
         permanent: false,
       },
     ]
