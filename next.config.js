@@ -13,17 +13,23 @@ const nextConfig = {
       },
     ],
   },
-  async redirects() {
+  async rewrites() {
     return [
       {
         source: '/simulator-studio',
         destination: 'https://ti-client-simulator-studio-git-main-rsstnts-projects.vercel.app/',
-        permanent: false,
+      },
+      {
+        source: '/simulator-studio/:path*',
+        destination: 'https://ti-client-simulator-studio-git-main-rsstnts-projects.vercel.app/:path*',
       },
       {
         source: '/scouts',
         destination: 'https://tradicia-scouts.vercel.app/',
-        permanent: false,
+      },
+      {
+        source: '/scouts/:path*',
+        destination: 'https://tradicia-scouts.vercel.app/:path*',
       },
     ]
   },
