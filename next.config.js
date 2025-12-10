@@ -19,6 +19,11 @@ const nextConfig = {
         destination: 'https://vercel.com/rsstnts-projects/ti-client-simulator-studio/4K3qxeBLUouhfPex8xk71V8byuf5',
         permanent: false,
       },
+      {
+        source: '/scouts',
+        destination: 'https://tradicia-scouts.vercel.app/',
+        permanent: false,
+      },
     ]
   },
 }
