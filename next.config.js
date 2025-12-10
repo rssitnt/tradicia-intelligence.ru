@@ -17,7 +17,7 @@ const nextConfig = {
     return [
       {
         source: '/simulator-studio',
-        destination: 'https://vercel.com/rsstnts-projects/ti-client-simulator-studio/4K3qxeBLUouhfPex8xk71V8byuf5',
+        destination: 'https://ti-client-simulator-studio-git-main-rsstnts-projects.vercel.app/',
         permanent: false,
       },
       {
